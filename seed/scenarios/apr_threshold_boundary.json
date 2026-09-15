@@ -1,0 +1,24 @@
+{
+  "name": "APR between the old (18%) and new (16%) threshold",
+  "description": "Demonstrates the primary v1 -> v2 change: a consumer loan with a 17% APR is compliant under v1.0 but fails RULE-017 under v2.0.",
+  "jurisdiction": "California",
+  "record_type": "loan_application",
+  "input_data": {
+    "borrower": {
+      "type": "consumer",
+      "state": "California",
+      "income": 70000,
+      "military": false,
+      "age": 34,
+      "credit_score": 690
+    },
+    "loan": {
+      "amount": 18000,
+      "apr": 17.2,
+      "product_type": "consumer_loan",
+      "term_months": 36
+    }
+  },
+  "expected_verdict_v1": "PASS",
+  "expected_verdict_v2": "FAIL"
+}

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# IDE / editor
+.vscode/
+.idea/
+
+# Editor/agent tooling
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Demo media (large binaries, not part of the source repo)
+demo/*.mp4
+demo/*.webm
+demo/*.mov

@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: changegraph
+      POSTGRES_PASSWORD: changegraph
+      POSTGRES_DB: changegraph
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - changegraph_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U changegraph"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://changegraph:changegraph@postgres:5432/changegraph
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      AWS_REGION: ${AWS_REGION:-}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8000
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    depends_on:
+      - backend
+
+volumes:
+  changegraph_postgres_data:

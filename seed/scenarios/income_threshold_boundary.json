@@ -1,0 +1,24 @@
+{
+  "name": "Income between the old (50k) and new (40k) covered-borrower threshold",
+  "description": "Demonstrates the second v1 -> v2 change: a borrower earning $42,000 requires manual review under v1.0 (below the $50,000 threshold) but passes cleanly under v2.0 (above the lowered $40,000 threshold).",
+  "jurisdiction": "Illinois",
+  "record_type": "loan_application",
+  "input_data": {
+    "borrower": {
+      "type": "consumer",
+      "state": "Illinois",
+      "income": 42000,
+      "military": false,
+      "age": 29,
+      "credit_score": 660
+    },
+    "loan": {
+      "amount": 9000,
+      "apr": 8.5,
+      "product_type": "consumer_loan",
+      "term_months": 36
+    }
+  },
+  "expected_verdict_v1": "REVIEW",
+  "expected_verdict_v2": "PASS"
+}

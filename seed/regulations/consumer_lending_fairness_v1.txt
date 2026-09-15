@@ -1,0 +1,273 @@
+CONSUMER LENDING FAIRNESS REGULATION
+
+Synthetic demonstration regulation. Not legal advice. This text and all of its provisions are fictional and were written for the ChangeGraph proof of concept.
+
+This Part establishes fairness, disclosure, and eligibility requirements applicable to consumer lending within the jurisdictions adopting it.
+
+=== DEFINITION: Covered Institution ===
+An institution meeting conditions A, B and C: (A) it extends consumer credit in the ordinary course of business, (B) it is organized under the laws of a United States jurisdiction, and (C) it originates more than 100 consumer loans per year.
+<<SOURCE: §2.1>>
+
+=== DEFINITION: Covered Borrower ===
+A natural person borrower whose gross annual income is at least $50,000, evaluated under the ability-to-repay provisions of this Part.
+<<SOURCE: §2.2>>
+
+=== DEFINITION: Consumer Loan ===
+An extension of credit to a natural person primarily for personal, family, or household purposes, excluding open-end credit plans and commercial financing.
+<<SOURCE: §2.3>>
+
+=== DEFINITION: Annual Percentage Rate ===
+The cost of credit expressed as a yearly rate, calculated in accordance with the truth-in-lending implementing rules of this jurisdiction.
+<<SOURCE: §2.4>>
+
+=== DEFINITION: Military Borrower ===
+A borrower who is a covered member of the armed forces, or a dependent of such a member, as defined by the Military Lending Act alignment provisions of this Part.
+<<SOURCE: §2.5>>
+
+=== DEFINITION: High-Cost Loan ===
+A consumer loan whose annual percentage rate exceeds the threshold established for the applicable jurisdiction under Section 4 of this Part.
+<<SOURCE: §2.6>>
+
+=== DEFINITION: Debt-to-Income Ratio ===
+The ratio of a borrower's total monthly debt obligations, including the proposed loan payment, to the borrower's gross monthly income.
+<<SOURCE: §2.7>>
+
+=== DEFINITION: Balloon Payment ===
+A single scheduled payment on a loan that is more than twice the amount of the average of the loan's earlier scheduled payments.
+<<SOURCE: §2.8>>
+
+=== DEFINITION: Elder Borrower ===
+A borrower who has attained the age of 65 years as of the date of the loan application.
+<<SOURCE: §2.9>>
+
+=== DEFINITION: Payday Loan ===
+A short-term, small-dollar consumer loan typically due on the borrower's next payday, regardless of the product name under which it is marketed.
+<<SOURCE: §2.10>>
+
+=== RULE: RULE-017 | Consumer Loan APR Threshold ===
+A consumer loan is non-compliant when the annual percentage rate charged to the borrower exceeds 18% per annum. This threshold does not apply to military borrowers, who are instead governed by the Military Borrower APR Cap.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 20>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.apr", "operator": "greater_than", "value": 18}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "APR exceeds the 18% threshold permitted for consumer loans."}>>
+<<SOURCE: §4.2>>
+
+=== RULE: RULE-042 | Military Borrower APR Cap ===
+A consumer loan extended to a military borrower is non-compliant when its annual percentage rate exceeds 20% per annum.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 25>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "borrower.military", "operator": "is_true", "value": true}, {"field": "loan.apr", "operator": "greater_than", "value": 20}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "APR exceeds the 20% threshold permitted for military borrowers."}>>
+<<SOURCE: §4.3>>
+
+=== RULE: RULE-002 | Minimum Credit Score Standard ===
+A consumer loan applicant with a credit score below 580 does not meet the minimum eligibility standard of this Part.
+<<TYPE: ELIGIBILITY>>
+<<PRIORITY: 50>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "borrower.credit_score", "operator": "less_than", "value": 580}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Borrower credit score is below the minimum eligibility threshold."}>>
+<<SOURCE: §5.1>>
+
+=== RULE: RULE-003 | Maximum Loan Term ===
+A consumer or auto loan may not have a term exceeding 84 months.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 80>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "in", "value": ["consumer_loan", "auto_loan"]}, {"field": "loan.term_months", "operator": "greater_than", "value": 84}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Loan term exceeds the maximum permitted duration."}>>
+<<SOURCE: §5.2>>
+
+=== RULE: RULE-004 | Debt-to-Income Ceiling ===
+A consumer loan whose debt-to-income ratio exceeds 0.43 requires manual underwriting review.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 60>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.debt_to_income_ratio", "operator": "greater_than", "value": 0.43}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Debt-to-income ratio exceeds the standard underwriting threshold."}>>
+<<SOURCE: §5.3>>
+
+=== RULE: RULE-005 | Income Verification Requirement ===
+A consumer loan applicant who does not meet the Covered Borrower income threshold of $50,000 requires manual income verification before origination.
+<<TYPE: ELIGIBILITY>>
+<<PRIORITY: 70>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "borrower.type", "operator": "equals", "value": "consumer"}, {"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "borrower.income", "operator": "less_than", "value": 50000}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Borrower does not meet the covered-borrower income threshold and requires manual income verification."}>>
+<<SOURCE: §5.4>>
+
+=== RULE: RULE-006 | Payday Loan APR Prohibition ===
+A payday loan may not carry an annual percentage rate above 36%.
+<<TYPE: PROHIBITION>>
+<<PRIORITY: 40>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "payday_loan"}, {"field": "loan.apr", "operator": "greater_than", "value": 36}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Payday loan APR exceeds the absolute statutory ceiling."}>>
+<<SOURCE: §5.5>>
+
+=== RULE: RULE-007 | Prepayment Penalty Prohibition ===
+Consumer loans may not include a prepayment penalty of any kind.
+<<TYPE: PROHIBITION>>
+<<PRIORITY: 90>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.has_prepayment_penalty", "operator": "is_true", "value": true}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Consumer loans may not include a prepayment penalty."}>>
+<<SOURCE: §5.6>>
+
+=== RULE: RULE-008 | Balloon Payment Restriction ===
+A loan with a balloon payment and a term under five years is prohibited.
+<<TYPE: PROHIBITION>>
+<<PRIORITY: 90>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.has_balloon_payment", "operator": "is_true", "value": true}, {"field": "loan.term_months", "operator": "less_than", "value": 60}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Balloon payment structures are prohibited on loans with a term under five years."}>>
+<<SOURCE: §5.7>>
+
+=== RULE: RULE-009 | Origination Fee Cap ===
+A consumer loan with an origination fee exceeding 5% of the loan amount requires disclosure review.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 85>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.origination_fee_pct", "operator": "greater_than", "value": 5}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Origination fee exceeds the standard threshold and requires disclosure review."}>>
+<<SOURCE: §5.8>>
+
+=== RULE: RULE-010 | Elder Borrower Enhanced Disclosure ===
+A loan to an elder borrower exceeding $20,000 requires an enhanced disclosure review.
+<<TYPE: DISCLOSURE>>
+<<PRIORITY: 75>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "borrower.age", "operator": "greater_than_or_equal", "value": 65}, {"field": "loan.amount", "operator": "greater_than", "value": 20000}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Elder borrower disclosure review required for loans above the standard amount threshold."}>>
+<<SOURCE: §5.9>>
+
+=== RULE: RULE-018 | Adjustable Rate Disclosure ===
+An adjustable-rate consumer loan requires a rate-change disclosure review.
+<<TYPE: DISCLOSURE>>
+<<PRIORITY: 95>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.rate_type", "operator": "equals", "value": "adjustable"}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Adjustable-rate consumer loans require rate-change disclosure review."}>>
+<<SOURCE: §5.10>>
+
+=== RULE: RULE-011 | New York High-Cost Loan Threshold ===
+In New York, a consumer loan is non-compliant when its annual percentage rate exceeds 16% per annum.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 30>>
+<<JURISDICTION: New York>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.apr", "operator": "greater_than", "value": 16}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "New York high-cost loan threshold exceeded."}>>
+<<SOURCE: §6.1>>
+
+=== RULE: RULE-012 | California Enhanced Disclosure Trigger ===
+In California, a consumer loan with an annual percentage rate above 10% triggers an enhanced disclosure review.
+<<TYPE: DISCLOSURE>>
+<<PRIORITY: 65>>
+<<JURISDICTION: California>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.apr", "operator": "greater_than", "value": 10}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "California enhanced disclosure requirement triggered."}>>
+<<SOURCE: §6.2>>
+
+=== RULE: RULE-013 | Texas Vulnerable Borrower Protection ===
+In Texas, a consumer loan to a military borrower or a borrower under 21 years of age is non-compliant when its annual percentage rate exceeds 20%.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 35>>
+<<JURISDICTION: Texas>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"any": [{"field": "borrower.military", "operator": "is_true", "value": true}, {"field": "borrower.age", "operator": "less_than", "value": 21}]}, {"field": "loan.apr", "operator": "greater_than", "value": 20}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Texas vulnerable-borrower APR ceiling exceeded."}>>
+<<SOURCE: §6.3>>
+
+=== RULE: RULE-014 | Small Business Carve-Out Notice ===
+A small-business extension of credit above $250,000 requires commercial underwriting review.
+<<TYPE: DISCLOSURE>>
+<<PRIORITY: 100>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "borrower.type", "operator": "equals", "value": "small_business"}, {"field": "loan.amount", "operator": "greater_than", "value": 250000}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Large small-business extension of credit requires commercial underwriting review."}>>
+<<SOURCE: §7.1>>
+
+=== RULE: RULE-019 | Florida Small-Dollar Loan Protection ===
+In Florida, a small-dollar consumer loan under $2,000 is non-compliant when its annual percentage rate exceeds 28%.
+<<TYPE: THRESHOLD>>
+<<PRIORITY: 45>>
+<<JURISDICTION: Florida>>
+<<EFFECTIVE_FROM: 2023-01-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.amount", "operator": "less_than", "value": 2000}, {"field": "loan.apr", "operator": "greater_than", "value": 28}]}>>
+<<ACTIONS: {"verdict": "FAIL", "action": "REJECT", "message": "Florida small-dollar consumer loan APR ceiling exceeded."}>>
+<<SOURCE: §6.4>>
+
+=== RULE: RULE-015 | Temporary Forbearance Flexibility ===
+A consumer loan more than 90 days past due qualifies for a temporary forbearance flexibility review.
+<<TYPE: REVIEW>>
+<<PRIORITY: 99>>
+<<JURISDICTION: ANY>>
+<<EFFECTIVE_FROM: 2020-03-01>>
+<<EFFECTIVE_TO: >>
+<<CONDITIONS: {"all": [{"field": "loan.product_type", "operator": "equals", "value": "consumer_loan"}, {"field": "loan.days_past_due", "operator": "greater_than", "value": 90}]}>>
+<<ACTIONS: {"verdict": "REVIEW", "action": "FLAG_REVIEW", "message": "Loan qualifies for temporary forbearance flexibility review."}>>
+<<SOURCE: §8.1>>
+
+=== EXCEPTION: RULE-017 ===
+Military borrowers are exempted from the general APR threshold and are instead governed by the Military Borrower APR Cap (RULE-042).
+<<CONDITIONS: {"any": [{"field": "borrower.military", "operator": "is_true", "value": true}]}>>
+<<SOURCE: §4.2(a)>>
+
+=== EXCEPTION: RULE-006 ===
+Tribal lending institutions operating under an approved lending compact are exempt from this Part's payday loan APR ceiling.
+<<CONDITIONS: {"field": "borrower.tribal_lending_compact", "operator": "is_true", "value": true}>>
+<<SOURCE: §5.5(a)>>
+
+=== EXCEPTION: RULE-004 ===
+Borrowers enrolled in an approved debt management plan are exempt from the debt-to-income ceiling.
+<<CONDITIONS: {"field": "borrower.debt_management_plan", "operator": "is_true", "value": true}>>
+<<SOURCE: §5.3(a)>>
+
+=== EXCEPTION: RULE-009 ===
+Loans originated through a state housing finance agency program are exempt from the origination fee cap.
+<<CONDITIONS: {"field": "loan.program", "operator": "equals", "value": "state_hfa"}>>
+<<SOURCE: §5.8(a)>>
+
+=== EXCEPTION: RULE-011 ===
+State-chartered credit unions are exempt from the New York high-cost loan threshold.
+<<CONDITIONS: {"field": "borrower.lender_type", "operator": "equals", "value": "credit_union"}>>
+<<SOURCE: §6.1(a)>>
+
+=== EXCEPTION: RULE-013 ===
+Borrowers who have completed an approved financial counseling course prior to origination are exempt from the Texas vulnerable-borrower APR ceiling.
+<<CONDITIONS: {"field": "borrower.completed_financial_counseling", "operator": "is_true", "value": true}>>
+<<SOURCE: §6.3(a)>>
